@@ -1,0 +1,14 @@
+.logo {
+  display: flex;
+  align-items: center;
+  font-size: 36px;
+  font-weight: 800;
+  color: #ff5a3c;
+  line-height: 1;
+}
+
+.house {
+  margin: 0 2px;
+  font-size: 28px;
+  transform: translateY(2px);
+}
