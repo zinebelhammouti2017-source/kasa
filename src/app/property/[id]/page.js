@@ -1,6 +1,10 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
 
-import { getPropertyById } from "@/lib/services/propertiesService";
+import {
+  getPropertyById,
+  PropertyApiError,
+} from "@/lib/services/propertiesService";
 import PropertyGallery from "@/components/PropertyGallery/PropertyGallery";
 import PropertyInfo from "@/components/PropertyInfo/PropertyInfo";
 import HostCard from "@/components/HostCard/HostCard";
@@ -9,7 +13,17 @@ import styles from "./page.module.css";
 
 export default async function PropertyDetailPage({ params }) {
   const { id } = await params;
-  const property = await getPropertyById(id);
+  let property;
+
+  try {
+    property = await getPropertyById(id);
+  } catch (error) {
+    if (error instanceof PropertyApiError && error.type === "not_found") {
+      notFound();
+    }
+
+    throw error;
+  }
 
   return (
     <div className={styles.page}>
