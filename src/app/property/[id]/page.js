@@ -1,0 +1,46 @@
+import Link from "next/link";
+
+import { getPropertyById } from "@/lib/services/propertiesService";
+import PropertyGallery from "@/components/PropertyGallery/PropertyGallery";
+import PropertyInfo from "@/components/PropertyInfo/PropertyInfo";
+import HostCard from "@/components/HostCard/HostCard";
+
+import styles from "./page.module.css";
+
+export default async function PropertyDetailPage({ params }) {
+  const { id } = await params;
+  const property = await getPropertyById(id);
+
+  return (
+    <div className={styles.page}>
+      <Link href="/" className={styles.backLink}>
+        ← Retour aux annonces
+      </Link>
+
+      <div className={styles.layout}>
+        <div className={styles.leftColumn}>
+          <PropertyGallery
+            pictures={property.pictures}
+            title={property.title}
+          />
+
+          <PropertyInfo
+            title={property.title}
+            location={property.location}
+            pricePerNight={property.price_per_night}
+            description={property.description}
+            equipments={property.equipments}
+            tags={property.tags}
+          />
+        </div>
+
+        <div className={styles.rightColumn}>
+          <HostCard
+            host={property.host}
+            rating={property.rating_avg}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}

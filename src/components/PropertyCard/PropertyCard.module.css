@@ -1,8 +1,35 @@
 .card {
+  position: relative;
   overflow: hidden;
+
   background-color: var(--color-white);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
+}
+
+.cardLink {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  border-radius: inherit;
+}
+
+.cardLink:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 4px;
+}
+
+.card:focus-within {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 4px;
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 8px 20px rgba(0,0,0,.12);
+}
+
+.cardLink:focus-visible {
+  outline: none;
 }
 
 .imageWrapper {
@@ -15,24 +42,6 @@
   object-fit: cover;
 }
 
-.favoriteButton {
-  position: absolute;
-  top: var(--spacing-sm);
-  right: var(--spacing-sm);
-
-  width: 32px;
-  height: 32px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background-color: var(--color-white);
-  color: var(--color-primary);
-  border-radius: var(--radius-sm);
-  font-size: 18px;
-}
-
 .content {
   padding: var(--spacing-sm);
 }
@@ -40,7 +49,6 @@
 .content h2 {
   margin-bottom: var(--spacing-xs);
   font-size: 16px;
-  color: var(--color-black);
 }
 
 .location {
@@ -52,11 +60,27 @@
 .price {
   font-size: 14px;
   font-weight: 600;
-  color: var(--color-black);
 }
 
-@media (max-width: 768px) {
-  .imageWrapper {
-    height: 220px;
-  }
+.favoriteButton {
+  position: absolute;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
+  z-index: 2;
+
+  width: 40px;
+  height: 40px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: var(--color-white);
+  color: var(--color-primary);
+  border-radius: var(--radius-sm);
+}
+
+.favoriteButton:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 3px;
 }
