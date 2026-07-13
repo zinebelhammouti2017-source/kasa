@@ -1,14 +1,17 @@
+import { Suspense } from "react";
+
 import Hero from "@/components/Hero/Hero";
-import PropertyGrid from "@/components/PropertyGrid/PropertyGrid";
-import { getProperties } from "@/lib/services/propertiesService";
+import PropertyList from "@/components/PropertyList/PropertyList";
+import PropertyGridSkeleton from "@/components/PropertyGridSkeleton/PropertyGridSkeleton";
 
-export default async function HomePage() {
-  const properties = await getProperties();
-
+export default function HomePage() {
   return (
     <>
       <Hero />
-      <PropertyGrid properties={properties} />
+
+      <Suspense fallback={<PropertyGridSkeleton />}>
+        <PropertyList />
+      </Suspense>
     </>
   );
 }
