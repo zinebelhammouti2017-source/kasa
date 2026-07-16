@@ -21,6 +21,7 @@ export default function PropertyCard({ property }) {
         </div>
 
         <div className={styles.content}>
+          
           <h2>{property.title}</h2>
           <p className={styles.location}>{property.location}</p>
           <p className={styles.price}>

@@ -5,7 +5,7 @@ import {
   getPropertyById,
   PropertyApiError,
 } from "@/lib/services/propertiesService";
-import PropertyGallery from "@/components/PropertyGallery/PropertyGallery";
+import PropertyCarousel from "@/components/PropertyCarousel/PropertyCarousel.jsx";
 import PropertyInfo from "@/components/PropertyInfo/PropertyInfo";
 import HostCard from "@/components/HostCard/HostCard";
 
@@ -33,7 +33,7 @@ export default async function PropertyDetailPage({ params }) {
 
       <div className={styles.layout}>
         <div className={styles.leftColumn}>
-          <PropertyGallery
+          <PropertyCarousel
             pictures={property.pictures}
             title={property.title}
           />

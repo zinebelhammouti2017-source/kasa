@@ -15,10 +15,10 @@ export default function PropertyInfo({
       </h1>
 
       <p className={styles.location}>{location}</p>
-
-      <p className={styles.price}>
-        {pricePerNight}€ <span>par nuit</span>
-      </p>
+<p className={styles.price}>
+  <span className={styles.srOnly}>Prix :</span>
+  <strong>{pricePerNight}€</strong> <span>par nuit</span>
+</p>
 
       <p className={styles.description}>{description}</p>
 

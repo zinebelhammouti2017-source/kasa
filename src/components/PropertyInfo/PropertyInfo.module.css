@@ -18,10 +18,14 @@
 }
 
 .price {
-  margin-bottom: var(--spacing-md);
-  font-size: 18px;
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.4;
+  font-weight: 400;
+}
+
+.price strong {
   font-weight: 700;
-  color: var(--color-black);
 }
 
 .price span {

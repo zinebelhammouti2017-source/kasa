@@ -1,0 +1,126 @@
+.carousel {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: var(--spacing-xs);
+  margin-bottom: 0;
+}
+
+.mainImage {
+  position: relative;
+  min-height: 340px;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+}
+
+.image {
+  object-fit: cover;
+}
+
+.navigationButton {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+
+  width: 25px;
+  height: 25px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  transform: translateY(-50%);
+
+  background-color: rgba(255, 255, 255, 0.9);
+  color: var(--color-black);
+  border-radius: 50%;
+
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.previousButton {
+  left: var(--spacing-sm);
+}
+
+.nextButton {
+  right: var(--spacing-sm);
+}
+
+.navigationButton:hover {
+  background-color: var(--color-white);
+}
+
+.navigationButton:focus-visible,
+.thumbnailButton:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+.counter {
+  position: absolute;
+  right: var(--spacing-sm);
+  bottom: var(--spacing-sm);
+  z-index: 2;
+
+  padding: 6px 10px;
+
+  background-color: rgba(0, 0, 0, 0.7);
+  color: var(--color-white);
+  border-radius: var(--radius-sm);
+
+  font-size: 13px;
+}
+
+.thumbnailGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-sm);
+
+  max-height: 340px;
+  overflow-y: auto;
+}
+
+.thumbnailButton {
+  position: relative;
+  min-height: 162px;
+  overflow: hidden;
+
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+
+  cursor: pointer;
+}
+
+.thumbnailButton[aria-current="true"] {
+  border-color: var(--color-primary);
+}
+
+@media (max-width: 768px) {
+  .carousel {
+    grid-template-columns: 1fr;
+  }
+
+  .mainImage {
+    min-height: 340px;
+  }
+
+  .thumbnailGrid {
+    display: flex;
+    max-height: none;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: var(--spacing-xs);
+  }
+
+  .thumbnailButton {
+    min-width: 105px;
+    min-height: 105px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thumbnailGrid {
+    scroll-behavior: auto;
+  }
+}
