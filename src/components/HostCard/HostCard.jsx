@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Image from "next/image";
 import styles from "./HostCard.module.css";
 
@@ -25,15 +26,11 @@ export default function HostCard({ host, rating }) {
         </div>
       </div>
 
-      <div className={styles.actions}>
-        <button type="button" className={styles.button}>
-          Contacter l’hôte
-        </button>
-
-        <button type="button" className={styles.button}>
-          Envoyer un message
-        </button>
-      </div>
+    <div className={styles.actions}>
+      <Link href="/messages" className={styles.button}>
+        Envoyer un message
+      </Link>
+    </div>
     </aside>
   );
 }
