@@ -1,0 +1,10 @@
+.emptyMessage {
+  margin-top: var(--spacing-xl);
+  padding: var(--spacing-md);
+
+  background-color: var(--color-white);
+  border-radius: var(--radius-md);
+
+  color: var(--color-gray-dark);
+  line-height: 1.5;
+}
