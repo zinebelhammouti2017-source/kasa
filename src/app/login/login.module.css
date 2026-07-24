@@ -1,0 +1,215 @@
+.loginPage {
+  width: 100%;
+  min-height: 520px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl) var(--spacing-md);
+  background-color: var(--color-gray-light);
+}
+
+.loginCard {
+  width: 100%;
+  max-width: 580px;
+  padding: var(--spacing-xl);
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.loginTitle {
+  margin: 0 0 var(--spacing-sm);
+  color: var(--color-primary);
+  font-size: 2.25rem;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.loginDescription {
+  margin: 0;
+  color: var(--color-gray-dark);
+  line-height: 1.5;
+  text-align: center;
+}
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+}
+
+.formField {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.formLabel {
+  color: var(--color-black);
+  font-weight: 600;
+}
+
+.formInput {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 var(--spacing-sm);
+  color: var(--color-black);
+  background-color: var(--color-white);
+  border: 1px solid var(--color-gray);
+  border-radius: var(--radius-sm);
+  font: inherit;
+}
+
+.formInput:hover {
+  border-color: var(--color-gray-dark);
+}
+
+.formInput:focus-visible {
+  border-color: var(--color-primary);
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.submitButton {
+  width: 100%;
+  min-height: 52px;
+  padding: var(--spacing-sm);
+  color: var(--color-white);
+  background-color: var(--color-primary);
+  border: none;
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.submitButton:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.submitButton:focus-visible {
+  outline: 3px solid var(--color-black);
+  outline-offset: 3px;
+}
+
+.forgotPassword {
+  margin: var(--spacing-md) 0 0;
+  color: var(--color-primary);
+  font-weight: 600;
+  text-align: center;
+}
+
+.registerLink {
+  display: block;
+  margin-top: var(--spacing-sm);
+  color: var(--color-black);
+  text-align: center;
+  text-decoration: none;
+}
+
+.registerLink strong {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.registerLink:hover strong {
+  color: var(--color-primary-dark);
+}
+
+.registerLink:focus-visible {
+  border-radius: var(--radius-sm);
+  outline: 3px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+.formInput[aria-invalid="true"] {
+  border-color: var(--color-primary-dark);
+}
+
+.fieldError {
+  margin: 0;
+  color: var(--color-primary-dark);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.formError {
+  margin: 0;
+  padding: 12px var(--spacing-sm);
+  color: var(--color-primary-dark);
+  background-color: var(--color-primary-light);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.submitButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+@media (max-width: 768px) {
+  .loginPage {
+    min-height: auto;
+    padding: var(--spacing-sm) 0 var(--spacing-lg);
+  }
+
+  .loginCard {
+    width: 100%;
+    max-width: 100%;
+    padding: var(--spacing-md) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+  }
+
+  .loginTitle {
+    margin-bottom: var(--spacing-xs);
+    font-size: 1.25rem;
+    line-height: 1.2;
+  }
+
+  .loginDescription {
+    max-width: 320px;
+    margin: 0 auto;
+    font-size: 0.875rem;
+    line-height: 1.4;
+  }
+
+  .loginForm {
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+  }
+
+  .formField {
+    gap: 6px;
+  }
+
+  .formLabel {
+    font-size: 0.875rem;
+  }
+
+  .formInput {
+    min-height: 44px;
+    padding: 0 var(--spacing-sm);
+    font-size: 1rem;
+  }
+
+  .submitButton {
+    min-height: 44px;
+    margin-top: var(--spacing-xs);
+    padding: 10px var(--spacing-sm);
+    font-size: 0.875rem;
+  }
+
+  .forgotPassword {
+    margin-top: var(--spacing-sm);
+    font-size: 0.875rem;
+  }
+
+  .registerLink {
+    margin-top: var(--spacing-sm);
+    font-size: 0.875rem;
+  }
+}

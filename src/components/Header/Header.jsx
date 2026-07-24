@@ -8,6 +8,21 @@ import HouseLogo from "../HouseLogo/HouseLogo";
 
 import styles from "./Header.module.css";
 
+function AccountIcon() {
+  return (
+    <svg
+      className={styles.accountIcon}
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <circle cx="12" cy="9" r="3" />
+      <path d="M6.5 18c1.2-2.8 3-4.2 5.5-4.2s4.3 1.4 5.5 4.2" />
+    </svg>
+  );
+}
+
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -22,6 +37,11 @@ export default function Header() {
     setIsMenuOpen(false);
   }
 
+  function closeMenuAndRestoreFocus() {
+    closeMenu();
+    menuButtonRef.current?.focus();
+  }
+
   useEffect(() => {
     if (!isMenuOpen) return;
 
@@ -29,7 +49,7 @@ export default function Header() {
 
     function handleEscape(event) {
       if (event.key === "Escape") {
-        closeMenu();
+        setIsMenuOpen(false);
         menuButtonRef.current?.focus();
       }
     }
@@ -68,6 +88,14 @@ export default function Header() {
         <Link href="/messages" aria-label="Consulter les messages">
           ▢
         </Link>
+
+        <Link
+          href="/login"
+          className={styles.accountLink}
+          aria-label="Se connecter"
+        >
+          <AccountIcon />
+        </Link>
       </div>
 
       <button
@@ -88,7 +116,7 @@ export default function Header() {
             type="button"
             className={styles.overlay}
             aria-label="Fermer le menu"
-            onClick={closeMenu}
+            onClick={closeMenuAndRestoreFocus}
           />
 
           <nav
@@ -110,10 +138,7 @@ export default function Header() {
                 type="button"
                 className={styles.closeButton}
                 aria-label="Fermer le menu"
-                onClick={() => {
-                  closeMenu();
-                  menuButtonRef.current?.focus();
-                }}
+                onClick={closeMenuAndRestoreFocus}
               >
                 ×
               </button>
@@ -128,12 +153,16 @@ export default function Header() {
                 À propos
               </Link>
 
+              <Link href="/favorites" onClick={closeMenu}>
+                Favoris
+              </Link>
+
               <Link href="/messages" onClick={closeMenu}>
                 Messagerie
               </Link>
 
-              <Link href="/favorites" onClick={closeMenu}>
-                Favoris
+              <Link href="/login" onClick={closeMenu}>
+                Se connecter
               </Link>
             </div>
 
