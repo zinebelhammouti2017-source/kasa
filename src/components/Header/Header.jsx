@@ -2,9 +2,16 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import Logo from "../Logo/Logo";
 import HouseLogo from "../HouseLogo/HouseLogo";
+
+import {
+  AUTH_CHANGE_EVENT,
+  getToken,
+  removeToken,
+} from "@/lib/utils/cookies";
 
 import styles from "./Header.module.css";
 
@@ -24,12 +31,25 @@ function AccountIcon() {
 }
 
 export default function Header() {
+  const router = useRouter();
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAccountMenuOpen, setIsAccountMenuOpen] =
+    useState(false);
+  const [isAuthenticated, setIsAuthenticated] =
+    useState(false);
 
   const menuButtonRef = useRef(null);
   const closeButtonRef = useRef(null);
+  const accountButtonRef = useRef(null);
+  const accountAreaRef = useRef(null);
+
+  function updateAuthentication() {
+    setIsAuthenticated(Boolean(getToken()));
+  }
 
   function openMenu() {
+    setIsAccountMenuOpen(false);
     setIsMenuOpen(true);
   }
 
@@ -41,6 +61,44 @@ export default function Header() {
     closeMenu();
     menuButtonRef.current?.focus();
   }
+
+  function toggleAccountMenu() {
+    setIsAccountMenuOpen((currentState) => !currentState);
+  }
+
+  function handleLogout() {
+    removeToken();
+
+    setIsAuthenticated(false);
+    setIsAccountMenuOpen(false);
+    setIsMenuOpen(false);
+
+    router.replace("/");
+    router.refresh();
+  }
+
+  useEffect(() => {
+    updateAuthentication();
+
+    window.addEventListener(
+      AUTH_CHANGE_EVENT,
+      updateAuthentication
+    );
+
+    window.addEventListener("focus", updateAuthentication);
+
+    return () => {
+      window.removeEventListener(
+        AUTH_CHANGE_EVENT,
+        updateAuthentication
+      );
+
+      window.removeEventListener(
+        "focus",
+        updateAuthentication
+      );
+    };
+  }, []);
 
   useEffect(() => {
     if (!isMenuOpen) return;
@@ -57,13 +115,57 @@ export default function Header() {
     document.addEventListener("keydown", handleEscape);
 
     return () => {
-      document.removeEventListener("keydown", handleEscape);
+      document.removeEventListener(
+        "keydown",
+        handleEscape
+      );
     };
   }, [isMenuOpen]);
 
+  useEffect(() => {
+    if (!isAccountMenuOpen) return;
+
+    function handlePointerDown(event) {
+      if (
+        !accountAreaRef.current?.contains(event.target)
+      ) {
+        setIsAccountMenuOpen(false);
+      }
+    }
+
+    function handleEscape(event) {
+      if (event.key === "Escape") {
+        setIsAccountMenuOpen(false);
+        accountButtonRef.current?.focus();
+      }
+    }
+
+    document.addEventListener(
+      "pointerdown",
+      handlePointerDown
+    );
+
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener(
+        "pointerdown",
+        handlePointerDown
+      );
+
+      document.removeEventListener(
+        "keydown",
+        handleEscape
+      );
+    };
+  }, [isAccountMenuOpen]);
+
   return (
     <header className={styles.header}>
-      <nav className={styles.leftNav} aria-label="Navigation principale">
+      <nav
+        className={styles.leftNav}
+        aria-label="Navigation principale"
+      >
         <Link href="/">Accueil</Link>
         <Link href="/about">À propos</Link>
       </nav>
@@ -77,25 +179,70 @@ export default function Header() {
       </Link>
 
       <div className={styles.actions}>
-        <Link href="/properties/new" className={styles.addLink}>
+        <Link
+          href="/properties/new"
+          className={styles.addLink}
+        >
           + Ajouter un logement
         </Link>
 
-        <Link href="/favorites" aria-label="Consulter les favoris">
+        <Link
+          href="/favorites"
+          aria-label="Consulter les favoris"
+        >
           ♡
         </Link>
 
-        <Link href="/messages" aria-label="Consulter les messages">
+        <Link
+          href="/messages"
+          aria-label="Consulter les messages"
+        >
           ▢
         </Link>
 
-        <Link
-          href="/login"
-          className={styles.accountLink}
-          aria-label="Se connecter"
+        <div
+          ref={accountAreaRef}
+          className={styles.accountArea}
         >
-          <AccountIcon />
-        </Link>
+          {isAuthenticated ? (
+            <>
+              <button
+                ref={accountButtonRef}
+                type="button"
+                className={styles.accountButton}
+                aria-label="Ouvrir le menu du compte"
+                aria-expanded={isAccountMenuOpen}
+                aria-controls="account-menu"
+                onClick={toggleAccountMenu}
+              >
+                <AccountIcon />
+              </button>
+
+              {isAccountMenuOpen && (
+                <div
+                  id="account-menu"
+                  className={styles.accountMenu}
+                >
+                  <button
+                    type="button"
+                    className={styles.logoutButton}
+                    onClick={handleLogout}
+                  >
+                    Se déconnecter
+                  </button>
+                </div>
+              )}
+            </>
+          ) : (
+            <Link
+              href="/login"
+              className={styles.accountLink}
+              aria-label="Se connecter"
+            >
+              <AccountIcon />
+            </Link>
+          )}
+        </div>
       </div>
 
       <button
@@ -153,7 +300,10 @@ export default function Header() {
                 À propos
               </Link>
 
-              <Link href="/favorites" onClick={closeMenu}>
+              <Link
+                href="/favorites"
+                onClick={closeMenu}
+              >
                 Favoris
               </Link>
 
@@ -161,9 +311,19 @@ export default function Header() {
                 Messagerie
               </Link>
 
-              <Link href="/login" onClick={closeMenu}>
-                Se connecter
-              </Link>
+              {isAuthenticated ? (
+                <button
+                  type="button"
+                  className={styles.mobileLogoutButton}
+                  onClick={handleLogout}
+                >
+                  Se déconnecter
+                </button>
+              ) : (
+                <Link href="/login" onClick={closeMenu}>
+                  Se connecter
+                </Link>
+              )}
             </div>
 
             <Link

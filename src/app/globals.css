@@ -24,7 +24,7 @@ html {
 body {
   min-height: 100vh;
   font-family: Arial, Helvetica, sans-serif;
-  background-color: var(--color-gray-light);
+  background-color:#FFFBF9 ;
   color: var(--color-black);
 }
 

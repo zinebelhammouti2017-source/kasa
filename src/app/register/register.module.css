@@ -1,0 +1,247 @@
+.registerPage {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 32px 16px 48px;
+  background-color:#FFFBF9 ;
+  ;
+}
+
+.registerCard {
+  width: 100%;
+  max-width: 740px;
+  box-sizing: border-box;
+  padding: 64px 48px 56px;
+  background-color: var(--color-white);
+  border: 1px solid #eeeeee;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.registerIntro {
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.registerTitle {
+  margin: 0;
+  color: var(--color-primary);
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.registerDescription {
+  margin: 10px auto 0;
+  color: var(--color-black);
+  font-size: 0.875rem;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.descriptionLine {
+  display: block;
+}
+
+.registerForm {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin: 32px auto 0;
+}
+
+.formField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.formLabel {
+  color: var(--color-black);
+  font-size: 0.8125rem;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+.formInput {
+  width: 100%;
+  min-height: 44px;
+  box-sizing: border-box;
+  padding: 0 12px;
+  color: var(--color-black);
+  background-color: var(--color-white);
+  border: 1px solid var(--color-gray);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-size: 0.875rem;
+}
+
+.formInput:hover {
+  border-color: var(--color-gray-dark);
+}
+
+.formInput:focus-visible {
+  border-color: var(--color-primary);
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.formInput[aria-invalid="true"] {
+  border-color: var(--color-primary-dark);
+}
+
+.termsField {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-black);
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin: 0;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.checkbox:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.termsField label {
+  cursor: pointer;
+}
+
+.termsText {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.fieldError {
+  margin: 2px 0 0;
+  color: var(--color-primary-dark);
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.formError {
+  margin: 0;
+  padding: 10px 12px;
+  color: var(--color-primary-dark);
+  background-color: var(--color-primary-light);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+.submitButton {
+  width: 100%;
+  max-width: 232px;
+  min-height: 44px;
+  align-self: center;
+  margin-top: 6px;
+  padding: 10px 16px;
+  color: var(--color-white);
+  background-color: var(--color-primary);
+  border: none;
+  border-radius: var(--radius-md);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.submitButton:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.submitButton:focus-visible {
+  outline: 3px solid var(--color-black);
+  outline-offset: 3px;
+}
+
+.submitButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.loginLink {
+  margin: 18px 0 0;
+  color: var(--color-primary);
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.loginLink a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.loginLink a:hover {
+  color: var(--color-primary-dark);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.loginLink a:focus-visible {
+  border-radius: var(--radius-sm);
+  outline: 3px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+@media (max-width: 768px) {
+  .registerPage {
+    padding: 16px 0 32px;
+  }
+
+  .registerCard {
+    max-width: 100%;
+    padding: 32px 20px;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .registerTitle {
+    font-size: 1.5rem;
+  }
+
+  .registerDescription {
+    max-width: 420px;
+    font-size: 0.8125rem;
+  }
+
+  .descriptionLine {
+    display: inline;
+  }
+
+  .descriptionLine:not(:last-child)::after {
+    content: " ";
+  }
+
+  .registerForm {
+    max-width: 420px;
+    gap: 16px;
+    margin-top: 28px;
+  }
+
+  .formInput {
+    min-height: 48px;
+    font-size: 1rem;
+  }
+
+  .submitButton {
+    max-width: 100%;
+    min-height: 48px;
+  }
+}
