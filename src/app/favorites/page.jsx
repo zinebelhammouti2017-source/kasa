@@ -16,7 +16,8 @@ export default async function FavoritesPage() {
         <h1>Vos favoris</h1>
 
         <p>
-          Retrouvez ici tous les logements que vous avez enregistrés.
+          Retrouvez ici tous les logements que vous avez
+          enregistrés.
         </p>
       </header>
 

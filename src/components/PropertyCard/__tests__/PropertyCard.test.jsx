@@ -1,5 +1,11 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createElement } from "react";
+import {
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
@@ -10,10 +16,14 @@ const favoritesServiceMock = vi.hoisted(() => ({
   toggleFavorite: vi.fn(),
 }));
 
-vi.mock("@/lib/services/favoritesService", () => favoritesServiceMock);
+vi.mock(
+  "@/lib/services/favoritesService",
+  () => favoritesServiceMock
+);
 
 vi.mock("next/image", () => ({
-  default: ({ src, alt }) => createElement("img", { src, alt }),
+  default: ({ src, alt }) =>
+    createElement("img", { src, alt }),
 }));
 
 vi.mock("next/link", () => ({
@@ -37,36 +47,50 @@ describe("PropertyCard", () => {
     vi.clearAllMocks();
   });
 
-  it("affiche le bouton favori non actif par defaut", async () => {
-    favoritesServiceMock.isFavorite.mockReturnValue(false);
+  it("affiche le bouton favori non actif par défaut", async () => {
+    favoritesServiceMock.isFavorite.mockResolvedValue(false);
 
     render(<PropertyCard property={property} />);
 
-    const favoriteButton = await screen.findByRole("button", {
-      name: /ajouter appartement cosy aux favoris/i,
-    });
+    const favoriteButton = await screen.findByRole(
+      "button",
+      {
+        name: /ajouter appartement cosy aux favoris/i,
+      }
+    );
 
-    expect(favoriteButton).toHaveAttribute("aria-pressed", "false");
+    expect(favoriteButton).toHaveAttribute(
+      "aria-pressed",
+      "false"
+    );
   });
 
-  it("affiche le bouton favori actif quand le logement est deja favori", async () => {
-    favoritesServiceMock.isFavorite.mockReturnValue(true);
+  it("affiche le bouton favori actif quand le logement est déjà favori", async () => {
+    favoritesServiceMock.isFavorite.mockResolvedValue(true);
 
     render(<PropertyCard property={property} />);
 
-    const favoriteButton = await screen.findByRole("button", {
-      name: /retirer appartement cosy des favoris/i,
-    });
+    const favoriteButton = await screen.findByRole(
+      "button",
+      {
+        name: /retirer appartement cosy des favoris/i,
+      }
+    );
 
-    expect(favoriteButton).toHaveAttribute("aria-pressed", "true");
+    expect(favoriteButton).toHaveAttribute(
+      "aria-pressed",
+      "true"
+    );
   });
 
-  it("met a jour le bouton favori et notifie le parent au clic", async () => {
+  it("met à jour le bouton favori et notifie le parent au clic", async () => {
     const user = userEvent.setup();
     const onFavoriteChange = vi.fn();
 
-    favoritesServiceMock.isFavorite.mockReturnValue(false);
-    favoritesServiceMock.toggleFavorite.mockReturnValue(true);
+    favoritesServiceMock.isFavorite.mockResolvedValue(false);
+    favoritesServiceMock.toggleFavorite.mockResolvedValue(
+      true
+    );
 
     render(
       <PropertyCard
@@ -75,16 +99,34 @@ describe("PropertyCard", () => {
       />
     );
 
-    const favoriteButton = await screen.findByRole("button", {
-      name: /ajouter appartement cosy aux favoris/i,
-    });
+    const favoriteButton = await screen.findByRole(
+      "button",
+      {
+        name: /ajouter appartement cosy aux favoris/i,
+      }
+    );
 
     await user.click(favoriteButton);
 
-    expect(favoritesServiceMock.toggleFavorite).toHaveBeenCalledWith(
-      property.id
+    expect(
+      favoritesServiceMock.toggleFavorite
+    ).toHaveBeenCalledWith(property.id, false);
+
+    const activeFavoriteButton = await screen.findByRole(
+      "button",
+      {
+        name: /retirer appartement cosy des favoris/i,
+      }
     );
-    expect(favoriteButton).toHaveAttribute("aria-pressed", "true");
-    expect(onFavoriteChange).toHaveBeenCalledWith(property.id, true);
+
+    expect(activeFavoriteButton).toHaveAttribute(
+      "aria-pressed",
+      "true"
+    );
+
+    expect(onFavoriteChange).toHaveBeenCalledWith(
+      property.id,
+      true
+    );
   });
 });
