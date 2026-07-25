@@ -1,6 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -30,23 +35,47 @@ function AccountIcon() {
   );
 }
 
+function subscribeToAuthentication(onStoreChange) {
+  window.addEventListener(
+    AUTH_CHANGE_EVENT,
+    onStoreChange
+  );
+  window.addEventListener("focus", onStoreChange);
+
+  return () => {
+    window.removeEventListener(
+      AUTH_CHANGE_EVENT,
+      onStoreChange
+    );
+    window.removeEventListener("focus", onStoreChange);
+  };
+}
+
+function getAuthenticationSnapshot() {
+  return Boolean(getToken());
+}
+
+function getServerAuthenticationSnapshot() {
+  return false;
+}
+
 export default function Header() {
   const router = useRouter();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAccountMenuOpen, setIsAccountMenuOpen] =
     useState(false);
-  const [isAuthenticated, setIsAuthenticated] =
-    useState(false);
+
+  const isAuthenticated = useSyncExternalStore(
+    subscribeToAuthentication,
+    getAuthenticationSnapshot,
+    getServerAuthenticationSnapshot
+  );
 
   const menuButtonRef = useRef(null);
   const closeButtonRef = useRef(null);
   const accountButtonRef = useRef(null);
   const accountAreaRef = useRef(null);
-
-  function updateAuthentication() {
-    setIsAuthenticated(Boolean(getToken()));
-  }
 
   function openMenu() {
     setIsAccountMenuOpen(false);
@@ -63,42 +92,20 @@ export default function Header() {
   }
 
   function toggleAccountMenu() {
-    setIsAccountMenuOpen((currentState) => !currentState);
+    setIsAccountMenuOpen(
+      (currentState) => !currentState
+    );
   }
 
   function handleLogout() {
     removeToken();
 
-    setIsAuthenticated(false);
     setIsAccountMenuOpen(false);
     setIsMenuOpen(false);
 
     router.replace("/");
     router.refresh();
   }
-
-  useEffect(() => {
-    updateAuthentication();
-
-    window.addEventListener(
-      AUTH_CHANGE_EVENT,
-      updateAuthentication
-    );
-
-    window.addEventListener("focus", updateAuthentication);
-
-    return () => {
-      window.removeEventListener(
-        AUTH_CHANGE_EVENT,
-        updateAuthentication
-      );
-
-      window.removeEventListener(
-        "focus",
-        updateAuthentication
-      );
-    };
-  }, []);
 
   useEffect(() => {
     if (!isMenuOpen) return;
@@ -144,7 +151,6 @@ export default function Header() {
       "pointerdown",
       handlePointerDown
     );
-
     document.addEventListener("keydown", handleEscape);
 
     return () => {
@@ -152,7 +158,6 @@ export default function Header() {
         "pointerdown",
         handlePointerDown
       );
-
       document.removeEventListener(
         "keydown",
         handleEscape
@@ -180,7 +185,7 @@ export default function Header() {
 
       <div className={styles.actions}>
         <Link
-          href="/properties/new"
+          href="/property/new"
           className={styles.addLink}
         >
           + Ajouter un logement
@@ -307,27 +312,35 @@ export default function Header() {
                 Favoris
               </Link>
 
-              <Link href="/messages" onClick={closeMenu}>
+              <Link
+                href="/messages"
+                onClick={closeMenu}
+              >
                 Messagerie
               </Link>
 
               {isAuthenticated ? (
                 <button
                   type="button"
-                  className={styles.mobileLogoutButton}
+                  className={
+                    styles.mobileLogoutButton
+                  }
                   onClick={handleLogout}
                 >
                   Se déconnecter
                 </button>
               ) : (
-                <Link href="/login" onClick={closeMenu}>
+                <Link
+                  href="/login"
+                  onClick={closeMenu}
+                >
                   Se connecter
                 </Link>
               )}
             </div>
 
             <Link
-              href="/properties/new"
+              href="/property/new"
               className={styles.mobileAddLink}
               onClick={closeMenu}
             >
