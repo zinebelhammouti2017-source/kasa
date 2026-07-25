@@ -151,7 +151,7 @@ export default function RegisterForm() {
         name: `${normalizedData.firstName} ${normalizedData.lastName}`,
         email: normalizedData.email,
         password: normalizedData.password,
-        role: "client",
+        role: "owner",
       });
 
       saveToken(data.token);

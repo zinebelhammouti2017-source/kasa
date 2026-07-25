@@ -1,6 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+import {
+  createProperty,
+  uploadPropertyImage,
+} from "@/lib/services/propertiesService";
 
 import styles from "./page.module.css";
 
@@ -43,10 +49,60 @@ const CATEGORIES = [
   "Forêt",
 ];
 
+const ACCEPTED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+];
+
+const ACCEPTED_IMAGE_EXTENSIONS = [
+  ".jpg",
+  ".jpeg",
+  ".png",
+  ".webp",
+];
+
+const IMAGE_ACCEPT_ATTRIBUTE =
+  ".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp";
+
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+const MAX_PROPERTY_PICTURES = 10;
+
 function toggleSelection(currentSelection, value) {
   return currentSelection.includes(value)
     ? currentSelection.filter((item) => item !== value)
     : [...currentSelection, value];
+}
+
+function getImageValidationMessage(
+  files,
+  maxFiles = 1
+) {
+  if (files.length > maxFiles) {
+    return `Vous pouvez sélectionner au maximum ${maxFiles} images du logement.`;
+  }
+
+  for (const file of files) {
+    const extension = file.name
+      .slice(file.name.lastIndexOf("."))
+      .toLocaleLowerCase("fr");
+
+    const hasAcceptedType =
+      ACCEPTED_IMAGE_TYPES.includes(file.type);
+
+    const hasAcceptedExtension =
+      ACCEPTED_IMAGE_EXTENSIONS.includes(extension);
+
+    if (!hasAcceptedType || !hasAcceptedExtension) {
+      return `Le fichier « ${file.name} » n’est pas accepté. Utilisez une image JPG, JPEG, PNG ou WebP.`;
+    }
+
+    if (file.size > MAX_IMAGE_SIZE) {
+      return `Le fichier « ${file.name} » dépasse la taille maximale de 5 Mo.`;
+    }
+  }
+
+  return "";
 }
 
 function FileUpload({
@@ -56,8 +112,18 @@ function FileUpload({
   multiple = false,
   selectedText,
   showAddImageText = false,
+  rulesText,
+  error,
   onChange,
 }) {
+  const describedBy = [
+    `${id}-selection`,
+    `${id}-rules`,
+    error ? `${id}-error` : null,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
     <div className={styles.uploadField}>
       <label
@@ -72,9 +138,10 @@ function FileUpload({
         name={name}
         className={styles.fileInput}
         type="file"
-        accept="image/*"
+        accept={IMAGE_ACCEPT_ATTRIBUTE}
         multiple={multiple}
-        aria-describedby={`${id}-selection`}
+        aria-describedby={describedBy}
+        aria-invalid={Boolean(error)}
         onChange={onChange}
       />
 
@@ -96,6 +163,23 @@ function FileUpload({
         </label>
       </div>
 
+      <p
+        id={`${id}-rules`}
+        className={styles.uploadRules}
+      >
+        {rulesText}
+      </p>
+
+      {error && (
+        <p
+          id={`${id}-error`}
+          className={styles.uploadError}
+          role="alert"
+        >
+          {error}
+        </p>
+      )}
+
       {showAddImageText && (
         <label
           htmlFor={id}
@@ -109,11 +193,14 @@ function FileUpload({
 }
 
 export default function AddPropertyForm() {
+  const router = useRouter();
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     postalCode: "",
     location: "",
+    price: "",
     hostName: "",
   });
 
@@ -121,6 +208,12 @@ export default function AddPropertyForm() {
   const [propertyPictures, setPropertyPictures] =
     useState([]);
   const [hostPicture, setHostPicture] = useState(null);
+
+  const [fileErrors, setFileErrors] = useState({
+    cover: "",
+    pictures: "",
+    host: "",
+  });
 
   const [selectedEquipments, setSelectedEquipments] =
     useState([]);
@@ -131,6 +224,7 @@ export default function AddPropertyForm() {
   const [customTag, setCustomTag] = useState("");
   const [customTags, setCustomTags] = useState([]);
   const [formMessage, setFormMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   function handleTextChange(event) {
     const { name, value } = event.target;
@@ -144,20 +238,80 @@ export default function AddPropertyForm() {
   }
 
   function handleCoverChange(event) {
-    setCoverImage(event.target.files?.[0] ?? null);
+    const file = event.target.files?.[0] ?? null;
+    const error = getImageValidationMessage(
+      file ? [file] : []
+    );
+
+    if (error) {
+      event.target.value = "";
+      setCoverImage(null);
+      setFileErrors((currentErrors) => ({
+        ...currentErrors,
+        cover: error,
+      }));
+      setFormMessage("");
+      return;
+    }
+
+    setCoverImage(file);
+    setFileErrors((currentErrors) => ({
+      ...currentErrors,
+      cover: "",
+    }));
     setFormMessage("");
   }
 
   function handlePicturesChange(event) {
-    setPropertyPictures(
-      Array.from(event.target.files ?? [])
+    const pictures = Array.from(
+      event.target.files ?? []
+    );
+    const error = getImageValidationMessage(
+      pictures,
+      MAX_PROPERTY_PICTURES
     );
 
+    if (error) {
+      event.target.value = "";
+      setPropertyPictures([]);
+      setFileErrors((currentErrors) => ({
+        ...currentErrors,
+        pictures: error,
+      }));
+      setFormMessage("");
+      return;
+    }
+
+    setPropertyPictures(pictures);
+    setFileErrors((currentErrors) => ({
+      ...currentErrors,
+      pictures: "",
+    }));
     setFormMessage("");
   }
 
   function handleHostPictureChange(event) {
-    setHostPicture(event.target.files?.[0] ?? null);
+    const file = event.target.files?.[0] ?? null;
+    const error = getImageValidationMessage(
+      file ? [file] : []
+    );
+
+    if (error) {
+      event.target.value = "";
+      setHostPicture(null);
+      setFileErrors((currentErrors) => ({
+        ...currentErrors,
+        host: error,
+      }));
+      setFormMessage("");
+      return;
+    }
+
+    setHostPicture(file);
+    setFileErrors((currentErrors) => ({
+      ...currentErrors,
+      host: "",
+    }));
     setFormMessage("");
   }
 
@@ -210,12 +364,121 @@ export default function AddPropertyForm() {
     );
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
-    setFormMessage(
-      "L’interface est prête. L’enregistrement dans l’API sera connecté à l’étape suivante."
-    );
+    if (isSubmitting) return;
+
+    const nextFileErrors = {
+      cover: getImageValidationMessage(
+        coverImage ? [coverImage] : []
+      ),
+      pictures: getImageValidationMessage(
+        propertyPictures,
+        MAX_PROPERTY_PICTURES
+      ),
+      host: getImageValidationMessage(
+        hostPicture ? [hostPicture] : []
+      ),
+    };
+
+    if (Object.values(nextFileErrors).some(Boolean)) {
+      setFileErrors(nextFileErrors);
+      setFormMessage(
+        "Veuillez corriger les images sélectionnées."
+      );
+      return;
+    }
+
+    setIsSubmitting(true);
+    setFormMessage("Création du logement en cours…");
+
+    try {
+      const [
+        uploadedCover,
+        uploadedPictures,
+        uploadedHostPicture,
+      ] = await Promise.all([
+        coverImage
+          ? uploadPropertyImage(
+              coverImage,
+              "property-cover"
+            )
+          : null,
+        Promise.all(
+          propertyPictures.map((picture) =>
+            uploadPropertyImage(
+              picture,
+              "property-picture"
+            )
+          )
+        ),
+        hostPicture
+          ? uploadPropertyImage(
+              hostPicture,
+              "user-picture"
+            )
+          : null,
+      ]);
+
+      const propertyData = {
+        title: formData.title.trim(),
+        description: formData.description.trim(),
+        location: [
+          formData.postalCode.trim(),
+          formData.location.trim(),
+        ]
+          .filter(Boolean)
+          .join(" "),
+        price_per_night: Number(formData.price),
+        host: {
+          name: formData.hostName.trim(),
+          ...(uploadedHostPicture?.url && {
+            picture: uploadedHostPicture.url,
+          }),
+        },
+        pictures: uploadedPictures.map(
+          (picture) => picture.url
+        ),
+        equipments: selectedEquipments,
+        tags: [
+          ...selectedCategories,
+          ...customTags,
+        ],
+        ...(uploadedCover?.url && {
+          cover: uploadedCover.url,
+        }),
+      };
+
+      const createdProperty =
+        await createProperty(propertyData);
+
+      setFormMessage("Le logement a bien été créé.");
+
+      if (createdProperty?.id) {
+        router.push(`/property/${createdProperty.id}`);
+        router.refresh();
+      }
+    } catch (error) {
+      if (error?.status === 401) {
+        router.push("/login");
+        return;
+      }
+
+      if (error?.status === 403) {
+        setFormMessage(
+          "Seuls les propriétaires et les administrateurs peuvent ajouter un logement."
+        );
+        return;
+      }
+
+      setFormMessage(
+        error?.message ||
+          "Impossible de créer le logement. Veuillez réessayer."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   const coverImageText = coverImage
@@ -236,6 +499,7 @@ export default function AddPropertyForm() {
       id="add-property-form"
       className={styles.form}
       onSubmit={handleSubmit}
+      aria-busy={isSubmitting}
     >
       <div className={styles.topGrid}>
         <section
@@ -313,6 +577,25 @@ export default function AddPropertyForm() {
               required
             />
           </div>
+
+          <div className={styles.formField}>
+            <label htmlFor="property-price">
+              Prix par nuit (€)
+            </label>
+
+            <input
+              id="property-price"
+              name="price"
+              type="number"
+              min="1"
+              step="1"
+              inputMode="numeric"
+              placeholder="Ex : 80"
+              value={formData.price}
+              onChange={handleTextChange}
+              required
+            />
+          </div>
         </section>
 
         <div className={styles.rightColumn}>
@@ -332,6 +615,8 @@ export default function AddPropertyForm() {
               name="coverImage"
               label="Image de couverture"
               selectedText={coverImageText}
+              rulesText="JPG, JPEG, PNG ou WebP — 5 Mo maximum."
+              error={fileErrors.cover}
               onChange={handleCoverChange}
             />
 
@@ -342,6 +627,8 @@ export default function AddPropertyForm() {
               multiple
               selectedText={propertyPicturesText}
               showAddImageText
+              rulesText="JPG, JPEG, PNG ou WebP — 5 Mo maximum par image, 10 images maximum."
+              error={fileErrors.pictures}
               onChange={handlePicturesChange}
             />
           </section>
@@ -379,6 +666,8 @@ export default function AddPropertyForm() {
               label="Photo de profil"
               selectedText={hostPictureText}
               showAddImageText
+              rulesText="JPG, JPEG, PNG ou WebP — 5 Mo maximum."
+              error={fileErrors.host}
               onChange={handleHostPictureChange}
             />
           </section>
