@@ -1,4 +1,7 @@
 /** @type {import('next').NextConfig} */
+const backendUrl =
+  process.env.BACKEND_URL || "http://localhost:3000";
+
 const nextConfig = {
   images: {
     remotePatterns: [
@@ -13,17 +16,14 @@ const nextConfig = {
     return [
       {
         source: "/backend/:path*",
-        destination: "http://localhost:3000/:path*",
+        destination: `${backendUrl}/:path*`,
       },
-
       {
-      source: "/uploads/:path*",
-      destination: "http://localhost:3000/uploads/:path*",
-    },
+        source: "/uploads/:path*",
+        destination: `${backendUrl}/uploads/:path*`,
+      },
     ];
   },
 };
-
-
 
 export default nextConfig;
