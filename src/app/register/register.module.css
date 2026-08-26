@@ -121,10 +121,6 @@
   cursor: pointer;
 }
 
-.termsText {
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
 
 .fieldError {
   margin: 2px 0 0;

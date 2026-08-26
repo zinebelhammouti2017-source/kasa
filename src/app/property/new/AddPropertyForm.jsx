@@ -116,8 +116,11 @@ function FileUpload({
   error,
   onChange,
 }) {
+  const labelId = `${id}-label`;
+  const selectionId = `${id}-selection`;
+
   const describedBy = [
-    `${id}-selection`,
+    selectionId,
     `${id}-rules`,
     error ? `${id}-error` : null,
   ]
@@ -126,12 +129,12 @@ function FileUpload({
 
   return (
     <div className={styles.uploadField}>
-      <label
-        htmlFor={id}
+      <p
+        id={labelId}
         className={styles.uploadTitle}
       >
         {label}
-      </label>
+      </p>
 
       <input
         id={id}
@@ -140,28 +143,30 @@ function FileUpload({
         type="file"
         accept={IMAGE_ACCEPT_ATTRIBUTE}
         multiple={multiple}
+        aria-labelledby={labelId}
         aria-describedby={describedBy}
         aria-invalid={Boolean(error)}
         onChange={onChange}
       />
 
-      <div className={styles.uploadRow}>
-        <label
-          id={`${id}-selection`}
-          htmlFor={id}
+      <label
+        htmlFor={id}
+        className={styles.uploadRow}
+      >
+        <span
+          id={selectionId}
           className={styles.uploadValue}
         >
           {selectedText}
-        </label>
+        </span>
 
-        <label
-          htmlFor={id}
+        <span
           className={styles.uploadButton}
-          aria-label={`Ajouter : ${label}`}
+          aria-hidden="true"
         >
-          <span aria-hidden="true">+</span>
-        </label>
-      </div>
+          <span>+</span>
+        </span>
+      </label>
 
       <p
         id={`${id}-rules`}
@@ -181,12 +186,9 @@ function FileUpload({
       )}
 
       {showAddImageText && (
-        <label
-          htmlFor={id}
-          className={styles.uploadHelp}
-        >
+        <p className={styles.uploadHelp}>
           + Ajouter une image
-        </label>
+        </p>
       )}
     </div>
   );
