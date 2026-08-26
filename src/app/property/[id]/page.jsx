@@ -50,8 +50,9 @@ export default async function PropertyDetailPage({ params }) {
 
         <div className={styles.rightColumn}>
           <HostCard
-            host={property.host}
-            rating={property.rating_avg}
+             host={property.host}
+             rating={property.rating_avg}
+             propertyId={property.id}
           />
         </div>
       </div>

@@ -194,11 +194,28 @@ export default function MessagesPage() {
 
         setConversations(receivedConversations);
 
-        if (receivedConversations.length > 0) {
-          setSelectedConversationId(
-            receivedConversations[0].id
-          );
-        }
+       if (receivedConversations.length > 0) {
+  const requestedConversationId =
+    new URLSearchParams(
+      window.location.search
+    ).get("conversation");
+
+  const requestedConversation =
+    receivedConversations.find(
+      (conversation) =>
+        String(conversation.id) ===
+        String(requestedConversationId)
+    );
+
+  setSelectedConversationId(
+    requestedConversation?.id ??
+      receivedConversations[0].id
+  );
+
+  if (requestedConversation) {
+    setIsMobileChatOpen(true);
+  }
+}
       } catch (error) {
         if (isCancelled) return;
 

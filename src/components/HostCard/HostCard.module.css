@@ -76,6 +76,23 @@
   outline-offset: 2px;
 }
 
+.button {
+  border: 0;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.error {
+  margin: 0;
+  color: #b42318;
+  font-size: 13px;
+}
+
 @media (max-width: 768px) {
   .card {
     padding: var(--spacing-sm);
