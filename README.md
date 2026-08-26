@@ -1,36 +1,159 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Kasa – Plateforme de location immobilière
 
-## Getting Started
+Kasa est une application web de location immobilière développée avec Next.js et React dans le cadre du Projet 8 de la formation Développeur d’applications Full-Stack d’OpenClassrooms.
 
-First, run the development server:
+L’application permet de consulter des logements, gérer des favoris, créer un compte, publier une propriété et échanger avec un propriétaire grâce à une messagerie.
+
+## Fonctionnalités
+
+- consultation des logements disponibles ;
+- fiche détaillée avec galerie d’images ;
+- inscription et connexion ;
+- favoris locaux pour les visiteurs et favoris enregistrés via l’API pour les utilisateurs connectés ;
+- ajout d’une propriété pour les propriétaires et administrateurs ;
+- upload et validation des images ;
+- messagerie entre un client et le propriétaire d’un logement ;
+- affichage responsive sur ordinateur et mobile ;
+- gestion des chargements, erreurs et pages introuvables ;
+- navigation clavier et composants accessibles.
+
+## Technologies utilisées
+
+### Frontend
+
+- Next.js 16 ;
+- React 19 ;
+- JavaScript ;
+- CSS Modules ;
+- Vitest ;
+- React Testing Library.
+
+### Backend
+
+- Node.js ;
+- Express ;
+- SQLite ;
+- API REST ;
+- authentification JWT.
+
+## Dépôts GitHub
+
+- Frontend : https://github.com/zinebelhammouti2017-source/kasa
+- Backend : https://github.com/zinebelhammouti2017-source/kasa-backend
+
+## Prérequis
+
+- Node.js 20 ou supérieur ;
+- npm ;
+- Git.
+
+## Installation
+
+Cloner les deux dépôts :
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/zinebelhammouti2017-source/kasa.git
+git clone https://github.com/zinebelhammouti2017-source/kasa-backend.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Installer le backend
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```bash
+cd kasa-backend
+npm install
+npm start
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+L’API est disponible à l’adresse :
 
-## Learn More
+```text
+http://localhost:3000
+```
 
-To learn more about Next.js, take a look at the following resources:
+La documentation de l’API est disponible à l’adresse :
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```text
+http://localhost:3000/docs.html
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Au premier démarrage, le backend crée automatiquement la base SQLite et importe les logements présents dans `data/properties.json`.
 
-## Deploy on Vercel
+### Installer le frontend
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Dans un second terminal :
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+cd kasa
+npm install
+npm run dev -- -p 3001
+```
+
+L’application est disponible à l’adresse :
+
+```text
+http://localhost:3001
+```
+
+## Tests et vérifications
+
+Lancer les tests unitaires :
+
+```bash
+npm run test:run
+```
+
+Lancer ESLint :
+
+```bash
+npm run lint
+```
+
+Créer le build de production :
+
+```bash
+npm run build
+```
+
+Le projet contient actuellement 23 tests unitaires et de composants réalisés avec Vitest et React Testing Library.
+
+Les tests couvrent notamment :
+
+- le service des favoris ;
+- la liste des favoris ;
+- les cartes de logement ;
+- le carrousel ;
+- la validation et l’envoi du formulaire d’ajout d’une propriété.
+
+## Structure principale du frontend
+
+```text
+src/
+├── app/                 # Pages Next.js
+├── components/          # Composants réutilisables
+├── lib/
+│   ├── services/        # Communication avec l’API
+│   └── utils/           # Fonctions utilitaires
+└── assets/              # Images et ressources
+```
+
+## Accessibilité et qualité
+
+Le projet utilise notamment :
+
+- des éléments HTML sémantiques ;
+- des labels associés aux champs ;
+- des messages d’erreur accessibles ;
+- une navigation clavier ;
+- des indicateurs de focus visibles ;
+- des attributs ARIA lorsque cela est nécessaire ;
+- `next/image` pour l’optimisation des images ;
+- des interfaces responsive adaptées aux maquettes desktop et mobile.
+
+## Déploiement
+
+Le lien vers l’application déployée sera ajouté après la mise en production.
+
+## Autrice
+
+Zineb El Hammouti  
+Projet réalisé dans le cadre de la formation OpenClassrooms.
