@@ -15,6 +15,7 @@ function validateForm({
   firstName,
   email,
   password,
+  role,
   termsAccepted,
 }) {
   const errors = {
@@ -22,6 +23,7 @@ function validateForm({
     firstName: "",
     email: "",
     password: "",
+    role: "",
     terms: "",
   };
 
@@ -43,6 +45,10 @@ function validateForm({
     errors.password = "Veuillez saisir un mot de passe.";
   }
 
+  if (!role) {
+    errors.role = "Veuillez sélectionner votre profil.";
+  }
+
   if (!termsAccepted) {
     errors.terms =
       "Vous devez accepter les conditions générales d’utilisation.";
@@ -58,6 +64,7 @@ export default function RegisterForm() {
   const firstNameInputRef = useRef(null);
   const emailInputRef = useRef(null);
   const passwordInputRef = useRef(null);
+  const roleInputRef = useRef(null);
   const termsInputRef = useRef(null);
 
   const [formData, setFormData] = useState({
@@ -65,6 +72,7 @@ export default function RegisterForm() {
     firstName: "",
     email: "",
     password: "",
+    role: "",
     termsAccepted: false,
   });
 
@@ -73,6 +81,7 @@ export default function RegisterForm() {
     firstName: "",
     email: "",
     password: "",
+    role: "",
     terms: "",
   });
 
@@ -108,6 +117,7 @@ export default function RegisterForm() {
       firstName: formData.firstName.trim(),
       email: formData.email.trim(),
       password: formData.password,
+      role: formData.role,
       termsAccepted: formData.termsAccepted,
     };
 
@@ -121,6 +131,7 @@ export default function RegisterForm() {
       "firstName",
       "email",
       "password",
+      "role",
       "terms",
     ];
 
@@ -134,6 +145,7 @@ export default function RegisterForm() {
         firstName: firstNameInputRef,
         email: emailInputRef,
         password: passwordInputRef,
+        role: roleInputRef,
         terms: termsInputRef,
       };
 
@@ -151,7 +163,7 @@ export default function RegisterForm() {
         name: `${normalizedData.firstName} ${normalizedData.lastName}`,
         email: normalizedData.email,
         password: normalizedData.password,
-        role: "owner",
+        role: normalizedData.role,
       });
 
       saveToken(data.token);
@@ -333,6 +345,59 @@ export default function RegisterForm() {
         )}
       </div>
 
+      <div className={styles.formField}>
+        <fieldset
+          className={styles.roleFieldset}
+          aria-invalid={Boolean(fieldErrors.role)}
+          aria-describedby={
+            fieldErrors.role
+              ? "register-role-error"
+              : undefined
+          }
+        >
+          <legend className={styles.formLabel}>
+            Je souhaite
+          </legend>
+
+          <label className={styles.roleOption}>
+            <input
+              ref={roleInputRef}
+              className={styles.roleRadio}
+              type="radio"
+              name="role"
+              value="client"
+              checked={formData.role === "client"}
+              onChange={handleChange}
+            />
+
+            <span>Chercher un logement</span>
+          </label>
+
+          <label className={styles.roleOption}>
+            <input
+              className={styles.roleRadio}
+              type="radio"
+              name="role"
+              value="owner"
+              checked={formData.role === "owner"}
+              onChange={handleChange}
+            />
+
+            <span>Proposer un logement</span>
+          </label>
+        </fieldset>
+
+        {fieldErrors.role && (
+          <p
+            id="register-role-error"
+            className={styles.fieldError}
+            role="alert"
+          >
+            {fieldErrors.role}
+          </p>
+        )}
+      </div>
+
       <div>
         <div className={styles.termsField}>
           <input
@@ -363,6 +428,7 @@ export default function RegisterForm() {
           <p
             id="register-terms-error"
             className={styles.fieldError}
+            role="alert"
           >
             {fieldErrors.terms}
           </p>
@@ -374,7 +440,9 @@ export default function RegisterForm() {
         type="submit"
         disabled={isLoading}
       >
-        {isLoading ? "Inscription en cours…" : "S’inscrire"}
+        {isLoading
+          ? "Inscription en cours…"
+          : "S’inscrire"}
       </button>
     </form>
   );

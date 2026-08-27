@@ -14,6 +14,7 @@ import HouseLogo from "../HouseLogo/HouseLogo";
 
 import {
   AUTH_CHANGE_EVENT,
+  getCurrentUser,
   getToken,
   removeToken,
 } from "@/lib/utils/cookies";
@@ -47,7 +48,10 @@ function subscribeToAuthentication(onStoreChange) {
       AUTH_CHANGE_EVENT,
       onStoreChange
     );
-    window.removeEventListener("focus", onStoreChange);
+    window.removeEventListener(
+      "focus",
+      onStoreChange
+    );
   };
 }
 
@@ -71,6 +75,14 @@ export default function Header() {
     getAuthenticationSnapshot,
     getServerAuthenticationSnapshot
   );
+
+  const currentUser = isAuthenticated
+    ? getCurrentUser()
+    : null;
+
+  const canAddProperty =
+    currentUser?.role === "owner" ||
+    currentUser?.role === "admin";
 
   const menuButtonRef = useRef(null);
   const closeButtonRef = useRef(null);
@@ -119,7 +131,10 @@ export default function Header() {
       }
     }
 
-    document.addEventListener("keydown", handleEscape);
+    document.addEventListener(
+      "keydown",
+      handleEscape
+    );
 
     return () => {
       document.removeEventListener(
@@ -134,7 +149,9 @@ export default function Header() {
 
     function handlePointerDown(event) {
       if (
-        !accountAreaRef.current?.contains(event.target)
+        !accountAreaRef.current?.contains(
+          event.target
+        )
       ) {
         setIsAccountMenuOpen(false);
       }
@@ -151,7 +168,10 @@ export default function Header() {
       "pointerdown",
       handlePointerDown
     );
-    document.addEventListener("keydown", handleEscape);
+    document.addEventListener(
+      "keydown",
+      handleEscape
+    );
 
     return () => {
       document.removeEventListener(
@@ -184,12 +204,14 @@ export default function Header() {
       </Link>
 
       <div className={styles.actions}>
-        <Link
-          href="/property/new"
-          className={styles.addLink}
-        >
-          + Ajouter un logement
-        </Link>
+        {canAddProperty && (
+          <Link
+            href="/property/new"
+            className={styles.addLink}
+          >
+            + Ajouter un logement
+          </Link>
+        )}
 
         <Link
           href="/favorites"
@@ -216,7 +238,9 @@ export default function Header() {
                 type="button"
                 className={styles.accountButton}
                 aria-label="Ouvrir le menu du compte"
-                aria-expanded={isAccountMenuOpen}
+                aria-expanded={
+                  isAccountMenuOpen
+                }
                 aria-controls="account-menu"
                 onClick={toggleAccountMenu}
               >
@@ -226,11 +250,15 @@ export default function Header() {
               {isAccountMenuOpen && (
                 <div
                   id="account-menu"
-                  className={styles.accountMenu}
+                  className={
+                    styles.accountMenu
+                  }
                 >
                   <button
                     type="button"
-                    className={styles.logoutButton}
+                    className={
+                      styles.logoutButton
+                    }
                     onClick={handleLogout}
                   >
                     Se déconnecter
@@ -263,12 +291,18 @@ export default function Header() {
       </button>
 
       {isMenuOpen && (
-        <div className={styles.mobileMenuContainer}>
+        <div
+          className={
+            styles.mobileMenuContainer
+          }
+        >
           <button
             type="button"
             className={styles.overlay}
             aria-label="Fermer le menu"
-            onClick={closeMenuAndRestoreFocus}
+            onClick={
+              closeMenuAndRestoreFocus
+            }
           />
 
           <nav
@@ -276,7 +310,11 @@ export default function Header() {
             className={styles.mobileMenu}
             aria-label="Navigation mobile"
           >
-            <div className={styles.mobileMenuHeader}>
+            <div
+              className={
+                styles.mobileMenuHeader
+              }
+            >
               <Link
                 href="/"
                 aria-label="Retour à l’accueil Kasa"
@@ -288,20 +326,32 @@ export default function Header() {
               <button
                 ref={closeButtonRef}
                 type="button"
-                className={styles.closeButton}
+                className={
+                  styles.closeButton
+                }
                 aria-label="Fermer le menu"
-                onClick={closeMenuAndRestoreFocus}
+                onClick={
+                  closeMenuAndRestoreFocus
+                }
               >
                 ×
               </button>
             </div>
 
-            <div className={styles.mobileLinks}>
-              <Link href="/" onClick={closeMenu}>
+            <div
+              className={styles.mobileLinks}
+            >
+              <Link
+                href="/"
+                onClick={closeMenu}
+              >
                 Accueil
               </Link>
 
-              <Link href="/about" onClick={closeMenu}>
+              <Link
+                href="/about"
+                onClick={closeMenu}
+              >
                 À propos
               </Link>
 
@@ -339,13 +389,17 @@ export default function Header() {
               )}
             </div>
 
-            <Link
-              href="/property/new"
-              className={styles.mobileAddLink}
-              onClick={closeMenu}
-            >
-              Ajouter un logement
-            </Link>
+            {canAddProperty && (
+              <Link
+                href="/property/new"
+                className={
+                  styles.mobileAddLink
+                }
+                onClick={closeMenu}
+              >
+                Ajouter un logement
+              </Link>
+            )}
           </nav>
         </div>
       )}

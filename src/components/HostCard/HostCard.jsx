@@ -17,6 +17,9 @@ export default function HostCard({
   const [isOpening, setIsOpening] = useState(false);
   const [error, setError] = useState("");
 
+  const hostName = host?.name || "Hôte Kasa";
+  const hostPicture = host?.picture?.trim();
+
   async function handleMessageClick() {
     if (isOpening) return;
 
@@ -46,26 +49,43 @@ export default function HostCard({
       className={styles.card}
       aria-labelledby="host-title"
     >
-      <h2 id="host-title" className={styles.title}>
+      <h2
+        id="host-title"
+        className={styles.title}
+      >
         Votre hôte
       </h2>
 
       <div className={styles.identity}>
-        <Image
-          src={host.picture}
-          alt={`Portrait de ${host.name}`}
-          width={64}
-          height={64}
-          className={styles.avatar}
-        />
+        {hostPicture ? (
+          <Image
+            src={hostPicture}
+            alt={`Portrait de ${hostName}`}
+            width={64}
+            height={64}
+            className={styles.avatar}
+          />
+        ) : (
+          <div
+            className={styles.avatarFallback}
+            aria-hidden="true"
+          >
+            {hostName.charAt(0).toUpperCase()}
+          </div>
+        )}
 
         <div className={styles.details}>
-          <p className={styles.name}>{host.name}</p>
+          <p className={styles.name}>
+            {hostName}
+          </p>
+
           <p
             className={styles.rating}
-            aria-label={`Note moyenne : ${rating} sur 5`}
+            aria-label={`Note moyenne : ${
+              rating ?? 0
+            } sur 5`}
           >
-            ★ {rating}
+            ★ {rating ?? 0}
           </p>
         </div>
       </div>
@@ -84,7 +104,10 @@ export default function HostCard({
         </button>
 
         {error && (
-          <p className={styles.error} role="alert">
+          <p
+            className={styles.error}
+            role="alert"
+          >
             {error}
           </p>
         )}

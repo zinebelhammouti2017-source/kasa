@@ -66,3 +66,37 @@ export function removeToken() {
 
   notifyAuthChange();
 }
+
+export function getCurrentUser() {
+  const token = getToken();
+
+  if (!token) return null;
+
+  try {
+    const payload = token.split(".")[1];
+
+    if (!payload) return null;
+
+    const normalizedPayload = payload
+      .replace(/-/g, "+")
+      .replace(/_/g, "/");
+
+    const decodedPayload = decodeURIComponent(
+      atob(normalizedPayload)
+        .split("")
+        .map(
+          (char) =>
+            "%" +
+            char
+              .charCodeAt(0)
+              .toString(16)
+              .padStart(2, "0")
+        )
+        .join("")
+    );
+
+    return JSON.parse(decodedPayload);
+  } catch {
+    return null;
+  }
+}
