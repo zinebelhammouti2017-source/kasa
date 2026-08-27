@@ -151,7 +151,17 @@ Le projet utilise notamment :
 
 ## Déploiement
 
-Le lien vers l’application déployée sera ajouté après la mise en production.
+### Frontend
+
+L’application est déployée sur Vercel :
+
+https://kasa-navy-omega.vercel.app/
+
+### Backend
+
+L’API Express est déployée sur Render.
+
+Le projet utilise SQLite. Sur l’environnement gratuit de Render, les données créées en production peuvent être réinitialisées lors d’un redémarrage du service. Pour une mise en production durable, une base persistante comme PostgreSQL serait recommandée.
 
 ## Autrice
 
