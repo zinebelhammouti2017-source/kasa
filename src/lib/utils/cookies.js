@@ -67,6 +67,14 @@ export function removeToken() {
   notifyAuthChange();
 }
 
+/**
+ * Décode le JWT stocké dans le cookie et retourne
+ * les informations de l’utilisateur connecté.
+ *
+ * @returns {object|null} Payload du JWT ou null
+ * si aucun utilisateur valide n’est connecté.
+ */
+
 export function getCurrentUser() {
   const token = getToken();
 

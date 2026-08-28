@@ -366,11 +366,16 @@ export default function AddPropertyForm() {
     );
   }
 
+  
+
   async function handleSubmit(event) {
     event.preventDefault();
 
+    // Empêche plusieurs soumissions simultanées du formulaire.
     if (isSubmitting) return;
 
+    // Vérifie une dernière fois la validité des images
+    // avant de commencer les appels vers l’API.
     const nextFileErrors = {
       cover: getImageValidationMessage(
         coverImage ? [coverImage] : []
@@ -396,6 +401,8 @@ export default function AddPropertyForm() {
     setFormMessage("Création du logement en cours…");
 
     try {
+      // Envoie les différentes images en parallèle
+      // afin de réduire le temps total de création.
       const [
         uploadedCover,
         uploadedPictures,
@@ -423,6 +430,8 @@ export default function AddPropertyForm() {
           : null,
       ]);
 
+      // Transforme les données du formulaire au format
+      // attendu par l’API Kasa.
       const propertyData = {
         title: formData.title.trim(),
         description: formData.description.trim(),
@@ -457,11 +466,15 @@ export default function AddPropertyForm() {
 
       setFormMessage("Le logement a bien été créé.");
 
+      // Redirige l’utilisateur vers la fiche
+      // du logement nouvellement créé.
       if (createdProperty?.id) {
         router.push(`/property/${createdProperty.id}`);
         router.refresh();
       }
     } catch (error) {
+      // Adapte le comportement de l’interface selon
+      // les erreurs d’authentification et d’autorisation.
       if (error?.status === 401) {
         router.push("/login");
         return;
@@ -479,6 +492,8 @@ export default function AddPropertyForm() {
           "Impossible de créer le logement. Veuillez réessayer."
       );
     } finally {
+      // Réactive le formulaire après le traitement,
+      // que la création réussisse ou échoue.
       setIsSubmitting(false);
     }
   }

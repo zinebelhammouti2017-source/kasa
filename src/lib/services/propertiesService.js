@@ -51,6 +51,14 @@ function getApiBaseUrl() {
     : "/backend/api";
 }
 
+
+/**
+ * Récupère la liste des propriétés depuis l’API.
+ *
+ * @returns {Promise<object[]>} Liste des propriétés disponibles.
+ * @throws {PropertyApiError} Si l’API retourne une erreur.
+ */
+
 export async function getProperties() {
   const response = await fetch(
     `${getApiBaseUrl()}/properties`
@@ -71,6 +79,15 @@ export async function getProperties() {
 
   return response.json();
 }
+
+/**
+ * Récupère une propriété à partir de son identifiant.
+ *
+ * @param {string|number} id Identifiant de la propriété.
+ * @returns {Promise<object>} Propriété correspondante.
+ * @throws {PropertyApiError} Si le logement est introuvable
+ * ou si l’API ne répond pas correctement.
+ */
 
 export async function getPropertyById(id) {
   let response;

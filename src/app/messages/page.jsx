@@ -181,6 +181,10 @@ export default function MessagesPage() {
 
   useEffect(() => {
     let isCancelled = false;
+    
+    // Charge les conversations au premier affichage.
+    // Si une conversation est présente dans l’URL,
+    // elle devient automatiquement la conversation active.
 
     async function loadConversations() {
       setIsLoadingConversations(true);
@@ -243,6 +247,9 @@ export default function MessagesPage() {
     }
 
     let isCancelled = false;
+
+     // Recharge les messages chaque fois que
+     // l’utilisateur change de conversation.
 
     async function loadMessages() {
       setIsLoadingMessages(true);
