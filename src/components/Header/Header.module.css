@@ -94,6 +94,29 @@
   box-shadow: var(--shadow-sm);
 }
 
+.accountMenuLink {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+
+  color: var(--color-black);
+  background: none;
+  border-radius: var(--radius-sm);
+
+  font-size: 14px;
+  text-align: left;
+}
+
+.accountMenuLink:hover {
+  color: var(--color-primary);
+  background-color: var(--color-gray-light);
+}
+
+.accountMenuLink:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
 .logoutButton {
   width: 100%;
   padding: 10px 12px;

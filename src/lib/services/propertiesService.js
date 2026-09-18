@@ -211,6 +211,7 @@ export async function uploadPropertyImage(
  * @param {object} propertyData Données complètes de la propriété.
  * @returns {Promise<object>} Propriété créée.
  */
+
 export async function createProperty(propertyData) {
   const token = requireToken();
 
@@ -249,4 +250,47 @@ export async function createProperty(propertyData) {
   }
 
   return response.json();
+}
+
+/**
+ * Supprime une propriété.
+ *
+ * @param {string|number} id Identifiant de la propriété à supprimer.
+ * @returns {Promise<void>}
+ * @throws {PropertyApiError} Si la suppression échoue.
+ */
+export async function deleteProperty(id) {
+  const token = requireToken();
+
+  let response;
+
+  try {
+    response = await fetch(
+      `${getApiBaseUrl()}/properties/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  } catch (error) {
+    throw new PropertyApiError(
+      "Impossible de supprimer le logement",
+      {
+        type: "network_error",
+        cause: error,
+      }
+    );
+  }
+
+  if (!response.ok) {
+    throw new PropertyApiError(
+      await getErrorMessage(response),
+      {
+        status: response.status,
+        type: getErrorType(response.status),
+      }
+    );
+  }
 }

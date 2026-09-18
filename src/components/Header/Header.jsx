@@ -248,23 +248,31 @@ export default function Header() {
               </button>
 
               {isAccountMenuOpen && (
-                <div
-                  id="account-menu"
-                  className={
-                    styles.accountMenu
-                  }
-                >
-                  <button
-                    type="button"
-                    className={
-                      styles.logoutButton
-                    }
-                    onClick={handleLogout}
-                  >
-                    Se déconnecter
-                  </button>
-                </div>
-              )}
+  <div
+    id="account-menu"
+    className={styles.accountMenu}
+  >
+    {currentUser?.role === "owner" && (
+      <Link
+        href="/my-properties"
+        className={styles.accountMenuLink}
+        onClick={() =>
+          setIsAccountMenuOpen(false)
+        }
+      >
+        Mes logements
+      </Link>
+    )}
+
+    <button
+      type="button"
+      className={styles.logoutButton}
+      onClick={handleLogout}
+    >
+      Se déconnecter
+    </button>
+  </div>
+)}
             </>
           ) : (
             <Link
