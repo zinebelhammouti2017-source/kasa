@@ -2,11 +2,34 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 
 import { createConversation } from "@/lib/services/messagesService";
+import {
+  AUTH_CHANGE_EVENT,
+  getCurrentUser,
+  getToken,
+} from "@/lib/utils/cookies";
 
 import styles from "./HostCard.module.css";
+
+function subscribeToAuthentication(onStoreChange) {
+  window.addEventListener(AUTH_CHANGE_EVENT, onStoreChange);
+  window.addEventListener("focus", onStoreChange);
+
+  return () => {
+    window.removeEventListener(AUTH_CHANGE_EVENT, onStoreChange);
+    window.removeEventListener("focus", onStoreChange);
+  };
+}
+
+function getAuthenticationSnapshot() {
+  return Boolean(getToken());
+}
+
+function getServerAuthenticationSnapshot() {
+  return false;
+}
 
 export default function HostCard({
   host,
@@ -14,11 +37,24 @@ export default function HostCard({
   propertyId,
 }) {
   const router = useRouter();
+
   const [isOpening, setIsOpening] = useState(false);
   const [error, setError] = useState("");
 
   const hostName = host?.name || "Hôte Kasa";
   const hostPicture = host?.picture?.trim();
+
+  const isAuthenticated = useSyncExternalStore(
+    subscribeToAuthentication,
+    getAuthenticationSnapshot,
+    getServerAuthenticationSnapshot
+  );
+
+  const currentUser = isAuthenticated ? getCurrentUser() : null;
+
+  const isOwnProperty =
+    currentUser &&
+    String(currentUser.id) === String(host?.id);
 
   async function handleMessageClick() {
     if (isOpening) return;
@@ -27,8 +63,7 @@ export default function HostCard({
     setError("");
 
     try {
-      const conversation =
-        await createConversation(propertyId);
+      const conversation = await createConversation(propertyId);
 
       router.push(
         `/messages?conversation=${encodeURIComponent(
@@ -40,6 +75,7 @@ export default function HostCard({
         requestError.message ||
           "Impossible d’ouvrir la conversation."
       );
+
       setIsOpening(false);
     }
   }
@@ -90,28 +126,30 @@ export default function HostCard({
         </div>
       </div>
 
-      <div className={styles.actions}>
-        <button
-          type="button"
-          className={styles.button}
-          onClick={handleMessageClick}
-          disabled={isOpening}
-          aria-busy={isOpening}
-        >
-          {isOpening
-            ? "Ouverture…"
-            : "Envoyer un message"}
-        </button>
-
-        {error && (
-          <p
-            className={styles.error}
-            role="alert"
+      {!isOwnProperty && (
+        <div className={styles.actions}>
+          <button
+            type="button"
+            className={styles.button}
+            onClick={handleMessageClick}
+            disabled={isOpening}
+            aria-busy={isOpening}
           >
-            {error}
-          </p>
-        )}
-      </div>
+            {isOpening
+              ? "Ouverture…"
+              : "Envoyer un message"}
+          </button>
+
+          {error && (
+            <p
+              className={styles.error}
+              role="alert"
+            >
+              {error}
+            </p>
+          )}
+        </div>
+      )}
     </aside>
   );
 }
