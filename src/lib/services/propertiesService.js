@@ -61,7 +61,10 @@ function getApiBaseUrl() {
 
 export async function getProperties() {
   const response = await fetch(
-    `${getApiBaseUrl()}/properties`
+    `${getApiBaseUrl()}/properties`,
+    {
+      cache: "no-store",
+    }
   );
 
   if (!response.ok) {
